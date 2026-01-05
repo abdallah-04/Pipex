@@ -1,27 +1,31 @@
 #include <stdlib.h>
 #include <unistd.h>
-#include "libft.h"
+#include <fcntl.h>
+#include "ft_printf/ft_printf.h"
 
-struct s_command_info {
-        char **command_folders;
-        char *path;
-        char **command_args;
-        char *absolute_path;
-};
-
+typedef struct s_command_info {
+	char	**command_folders;
+	char	*path;
+	char	**command_args;
+	char	*absolute_path;
+} command_info;
 
 void printenvs(char **env)
 {
-	int i = 0;
+	int	i;
+	i = 0;
 	while (env[i++])
 		printf("%s\n", env[i]);
 }
 
 char	*get_path(char **env)
 {
-	int i=0;
-	int j =0;
-	char *path;
+	int	i;
+	int	j;
+	char	*path;
+
+	i = 0;
+	j = 0;
 	while(env[i])
 	{
 		if (!(ft_strncmp(env[i], "PATH=", 5)))
@@ -33,41 +37,56 @@ char	*get_path(char **env)
 	return (path);
 }
 
-char	*get_command_path(struct s_command_info *info)
+char	*get_command_path(command_info *info)
 {
-	int i;
+	int	i;
+	char	*str;
+
 	i = 0;
 	while (info->command_folders[i])
 	{
-		
-		char *str = ft_strjoin(info->command_folders[i], "/");
-		//printf("%s\n", str);
+		str = ft_strjoin(info->command_folders[i], "/");
 		str = ft_strjoin(str,  info->command_args[0]);
-		//printf("%s\n", str);
-	       if(!access(str, X_OK))
-		       return (str);
-	       i++;
+		if(!access(str, X_OK))
+			return (str);
+		i++;
 	}
 	return (NULL);
 }
 
-#include <fcntl.h>
 int main(int argc, char **argv, char **env)
 {
-	if (argc != 2)
-		return (0);
-	struct s_command_info command;
-	command.path = get_path(env);	
+	// if (argc != 5)
+	// 	return (0);
+	int fd[2];
+	if(pipe(fd) == -1){
+		ft_printf("\nError: pipe!\n");
+		exit(-1);
+	}
+	command_info command;
+	command.path = get_path(env);
 	command.command_folders = ft_split(command.path, ':');
-	command.command_args = ft_split(argv[1], ' ');
+	command.command_args = ft_split(argv[2], ' ');
 	command.absolute_path = get_command_path(&command);
 	if (!command.absolute_path)
 		return (0);
 	int id = fork();
 	if (id == 0)
 	{
-	int fd = open("outfile", O_WRONLY|O_CREAT);
-	dup2(fd, 1);
-	execve(command.absolute_path, command.command_args, env);
+		fd[0] = open(argv[1], O_RDONLY);
+		if (fd[0] == -1)
+			return (perror("open"), 1);
+		dup2(fd[0], 0);
+		execve(command.absolute_path, command.command_args, env);
+	}
+	else
+	{
+		command.command_args = ft_split(argv[3], ' ');
+		command.absolute_path = get_command_path(&command);
+		fd[1] = open(argv[4], O_RDONLY);
+		if (fd[1] == -1)
+			return (perror("open"), 1);
+		dup2(fd[1], fd[0]);
+		execve(command.absolute_path, command.command_args, env);
 	}
 }
