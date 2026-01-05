@@ -1,5 +1,1 @@
-a.out
-execve.c
-fork.c
-ft_printf
-outfile.txt
+0

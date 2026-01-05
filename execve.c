@@ -56,37 +56,54 @@ char	*get_command_path(command_info *info)
 
 int main(int argc, char **argv, char **env)
 {
-	// if (argc != 5)
-	// 	return (0);
-	int fd[2];
-	if(pipe(fd) == -1){
-		ft_printf("\nError: pipe!\n");
-		exit(-1);
-	}
-	command_info command;
-	command.path = get_path(env);
-	command.command_folders = ft_split(command.path, ':');
-	command.command_args = ft_split(argv[2], ' ');
-	command.absolute_path = get_command_path(&command);
-	if (!command.absolute_path)
-		return (0);
-	int id = fork();
-	if (id == 0)
-	{
-		fd[0] = open(argv[1], O_RDONLY);
-		if (fd[0] == -1)
-			return (perror("open"), 1);
-		dup2(fd[0], 0);
-		execve(command.absolute_path, command.command_args, env);
-	}
-	else
-	{
-		command.command_args = ft_split(argv[3], ' ');
-		command.absolute_path = get_command_path(&command);
-		fd[1] = open(argv[4], O_RDONLY);
-		if (fd[1] == -1)
-			return (perror("open"), 1);
-		dup2(fd[1], fd[0]);
-		execve(command.absolute_path, command.command_args, env);
-	}
+    int	fd_pipe[2];
+    int	fd_infile;
+    int fd_outfile;
+    int	id;
+    command_info command;
+
+    if (argc != 5)
+        return (1);
+
+    if (pipe(fd_pipe) == -1)
+        return (perror("pipe"), 1);
+
+    id = fork();
+    if (id == -1)
+        return (perror("fork"), 1);
+
+    if (id == 0)
+    {
+        fd_infile = open(argv[1], O_RDONLY);
+        if (fd_infile == -1)
+            return (perror(argv[1]), 1);
+        dup2(fd_infile, 0);
+        dup2(fd_pipe[1], 1);
+        close(fd_pipe[0]);
+        close(fd_pipe[1]);
+        command.path = get_path(env);
+        command.command_folders = ft_split(command.path, ':');
+        command.command_args = ft_split(argv[2], ' ');
+        command.absolute_path = get_command_path(&command);
+        execve(command.absolute_path, command.command_args, env);
+        perror("execve");
+    }
+    else
+    {
+        fd_outfile = open(argv[4], O_CREAT | O_WRONLY | O_TRUNC, 0644);
+        if (fd_outfile == -1)
+            return (perror(argv[4]), 1);
+        dup2(fd_pipe[0], 0);
+        dup2(fd_outfile, 1);
+        close(fd_pipe[0]);
+        close(fd_pipe[1]);
+        command.path = get_path(env);
+        command.command_folders = ft_split(command.path, ':');
+        command.command_args = ft_split(argv[3], ' ');
+        command.absolute_path = get_command_path(&command);
+        execve(command.absolute_path, command.command_args, env);
+        perror("execve");
+    }
+    return (0);
 }
+
