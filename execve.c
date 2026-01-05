@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include "ft_printf/ft_printf.h"
+#include "libft/libft.h"
 
 typedef struct s_command_info {
 	char	**command_folders;
