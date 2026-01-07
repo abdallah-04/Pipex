@@ -6,14 +6,14 @@
 /*   By: amufleh <amufleh@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/07 11:57:57 by amufleh           #+#    #+#             */
-/*   Updated: 2026/01/07 12:17:03 by amufleh          ###   ########.fr       */
+/*   Updated: 2026/01/07 15:10:21 by amufleh          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
 
-char	*get_path(char **env)
+char	*get_$path(char **env)
 {
 	int	i;
 	int	j;
@@ -32,7 +32,7 @@ char	*get_path(char **env)
 	return (path);
 }
 
-char	*get_command_path(command_info *info)
+char	*get_cmd_path(command_info *info)
 {
 	int	i;
 	char	*str;

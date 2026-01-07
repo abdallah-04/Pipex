@@ -6,11 +6,11 @@
 #    By: amufleh <amufleh@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/07 12:00:33 by amufleh           #+#    #+#              #
-#    Updated: 2026/01/07 12:15:43 by amufleh          ###   ########.fr        #
+#    Updated: 2026/01/07 15:11:24 by amufleh          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRC = utils.c execve.c
+SRC = utils.c pipex.c
 OBJ = $(SRC:.c=.o)
 
 CC = cc
