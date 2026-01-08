@@ -6,7 +6,7 @@
 /*   By: amufleh <amufleh@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/07 11:58:16 by amufleh           #+#    #+#             */
-/*   Updated: 2026/01/07 15:42:51 by amufleh          ###   ########.fr       */
+/*   Updated: 2026/01/08 11:22:37 by amufleh          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,3 +26,5 @@ typedef struct s_command_info
 
 char	*get_path(char **env);
 char	*get_cmd_path(t_command_info *info);
+void	clean_and_exit(t_command_info cmd, int *fd_pipe, int fd_file);
+void	free_split(char **arr);
