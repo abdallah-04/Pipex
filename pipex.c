@@ -6,7 +6,7 @@
 /*   By: amufleh <amufleh@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/07 15:11:00 by amufleh           #+#    #+#             */
-/*   Updated: 2026/01/08 15:22:21 by amufleh          ###   ########.fr       */
+/*   Updated: 2026/01/08 16:09:48 by amufleh          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,12 @@ static void	init_command(t_command_info *command, char **env)
 	}
 }
 
+static int	return_error(void)
+{
+	perror("Error");
+	return (1);
+}
+
 int	main(int argc, char **argv, char **env)
 {
 	t_command_info	command;
@@ -96,10 +102,10 @@ int	main(int argc, char **argv, char **env)
 		return (0);
 	pipe_res = pipe(fd_pipe);
 	if (pipe_res == -1)
-		return (perror("Error"), 1);
+		return (return_error());
 	fork_id = fork();
 	if (fork_id == -1)
-		return (perror("Error"), 1);
+		return (return_error());
 	ft_bzero(&command, sizeof(t_command_info));
 	init_command(&command, env);
 	if (fork_id == 0)
