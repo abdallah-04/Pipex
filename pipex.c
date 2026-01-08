@@ -6,7 +6,7 @@
 /*   By: amufleh <amufleh@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/07 15:11:00 by amufleh           #+#    #+#             */
-/*   Updated: 2026/01/08 11:26:21 by amufleh          ###   ########.fr       */
+/*   Updated: 2026/01/08 12:36:32 by amufleh          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,13 @@ static void	do_command_two(t_command_info command, char **argv, int *fd_pipe)
 	close(fd_pipe[1]);
 	command.command_args = ft_split(argv[3], ' ');
 	if (!command.command_args)
-		clean_and_exit(command, NULL, -1);
-	command.absolute_path = get_cmd_path(&command);
+		clean_and_exit(command, fd_pipe, fd_outfile);
+	command.absolute_path = NULL;//get_cmd_path(&command);
 	if (!command.absolute_path)
-		clean_and_exit(command, NULL, -1);
+		clean_and_exit(command, fd_pipe, fd_outfile);
 	execve(command.absolute_path, command.command_args, command.env);
 	perror("Error");
-	clean_and_exit(command, NULL, -1);
+	clean_and_exit(command, fd_pipe, -1);
 }
 
 static void	do_command_one(t_command_info command, char **argv, int *fd_pipe)
@@ -43,7 +43,7 @@ static void	do_command_one(t_command_info command, char **argv, int *fd_pipe)
 
 	fd_infile = open(argv[1], O_RDONLY);
 	if (fd_infile == -1)
-		clean_and_exit(command, fd_pipe, -1);
+		clean_and_exit(command, fd_pipe, fd_infile);
 	if (dup2(fd_infile, 0) == -1)
 		clean_and_exit(command, fd_pipe, fd_infile);
 	if (dup2(fd_pipe[1], 1) == -1)
@@ -53,16 +53,16 @@ static void	do_command_one(t_command_info command, char **argv, int *fd_pipe)
 	close(fd_pipe[1]);
 	command.command_args = ft_split(argv[2], ' ');
 	if (!command.command_args)
-		clean_and_exit(command, NULL, -1);
+		clean_and_exit(command, fd_pipe, fd_infile);
 	command.absolute_path = get_cmd_path(&command);
 	if (!command.absolute_path)
-		clean_and_exit(command, NULL, -1);
+		clean_and_exit(command, fd_pipe, fd_infile);
 	execve(command.absolute_path, command.command_args, command.env);
 	perror("Error");
-	clean_and_exit(command, NULL, -1);
+	clean_and_exit(command, fd_pipe, fd_infile);
 }
 
-void init_command(t_command_info *command, char **env)
+static void	init_command(t_command_info *command, char **env)
 {
 	command->command_args = NULL;
 	command->command_folders = NULL;
