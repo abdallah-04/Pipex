@@ -6,7 +6,7 @@
 /*   By: amufleh <amufleh@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/07 11:58:16 by amufleh           #+#    #+#             */
-/*   Updated: 2026/01/08 11:22:37 by amufleh          ###   ########.fr       */
+/*   Updated: 2026/01/08 15:14:23 by amufleh          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include "libft/libft.h"
+#include <sys/wait.h>
 
 typedef struct s_command_info
 {

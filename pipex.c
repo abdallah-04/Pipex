@@ -6,7 +6,7 @@
 /*   By: amufleh <amufleh@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/07 15:11:00 by amufleh           #+#    #+#             */
-/*   Updated: 2026/01/08 14:26:54 by amufleh          ###   ########.fr       */
+/*   Updated: 2026/01/08 15:22:21 by amufleh          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static void	do_command_two(t_command_info command, char **argv, int *fd_pipe)
 {
-	int fd_outfile;
+	int	fd_outfile;
 
 	fd_outfile = open(argv[4], O_CREAT | O_WRONLY, 0644);
 	if (fd_outfile == -1)
@@ -39,7 +39,7 @@ static void	do_command_two(t_command_info command, char **argv, int *fd_pipe)
 
 static void	do_command_one(t_command_info command, char **argv, int *fd_pipe)
 {
-	int fd_infile;
+	int	fd_infile;
 
 	fd_infile = open(argv[1], O_RDONLY);
 	if (fd_infile == -1)
@@ -105,6 +105,9 @@ int	main(int argc, char **argv, char **env)
 	if (fork_id == 0)
 		do_command_one(command, argv, fd_pipe);
 	else
+	{
+		wait(NULL);
 		do_command_two(command, argv, fd_pipe);
+	}
 	return (0);
 }

@@ -6,16 +6,16 @@
 /*   By: amufleh <amufleh@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/07 11:57:57 by amufleh           #+#    #+#             */
-/*   Updated: 2026/01/08 14:47:09 by amufleh          ###   ########.fr       */
+/*   Updated: 2026/01/08 15:23:54 by amufleh          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-char *get_path(char **env)
+char	*get_path(char **env)
 {
-	char *path;
-	int i;
+	char	*path;
+	int		i;
 
 	i = 0;
 	path = NULL;
@@ -26,7 +26,7 @@ char *get_path(char **env)
 			path = ft_strdup(env[i] + 5);
 			if (!path)
 				return (NULL);
-			break;
+			break ;
 		}
 		i++;
 	}
@@ -36,7 +36,7 @@ char *get_path(char **env)
 char	*get_cmd_path(t_command_info *info)
 {
 	char	*str;
-	char *tmp;
+	char	*tmp;
 	int		i;
 
 	i = 0;
@@ -55,7 +55,7 @@ char	*get_cmd_path(t_command_info *info)
 		if (!access(str, X_OK))
 			return (str);
 		free(str);
-			i++;
+		i++;
 	}
 	free(str);
 	return (NULL);
@@ -66,7 +66,7 @@ void	free_split(char **arr)
 	int	i;
 
 	if (!arr || !arr[0])
-		return;
+		return ;
 	i = 0;
 	while (arr[i])
 	{
@@ -76,7 +76,7 @@ void	free_split(char **arr)
 	free(arr);
 }
 
-void clean_and_exit(t_command_info cmd, int *fd_pipe, int fd_file)
+void	clean_and_exit(t_command_info cmd, int *fd_pipe, int fd_file)
 {
 	if (fd_pipe)
 	{
