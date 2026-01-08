@@ -6,29 +6,31 @@
 /*   By: amufleh <amufleh@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/07 11:57:57 by amufleh           #+#    #+#             */
-/*   Updated: 2026/01/07 15:42:31 by amufleh          ###   ########.fr       */
+/*   Updated: 2026/01/08 10:56:59 by amufleh          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-char	*get_path(char **env)
+char *get_path(char **env)
 {
-	char	*path;
-	int		i;
-	int		j;
+	char *path;
+	int i;
 
 	i = 0;
-	j = 0;
+	path = NULL;
 	while (env[i])
 	{
-		if (!(ft_strncmp(env[i], "PATH=", 5)))
+		if (ft_strncmp(env[i], "PATH=", 5) == 0)
 		{
-			path = ft_strdup(env[i]) + 5;
+			path = ft_strdup(env[i] + 5);
+			if (!path)
+				return NULL;
+			break;
 		}
 		i++;
 	}
-	return (path);
+	return path;
 }
 
 char	*get_cmd_path(t_command_info *info)
