@@ -40,12 +40,11 @@ char	*get_cmd_path(t_command_info *info)
 	int		i;
 
 	i = 0;
-	if (!info->command_args[0] || info->command_args[0][0] == '\0')
+	if (!info->command_args || !info->command_args[0]
+    	|| info->command_args[0][0] == '\0')
     	return (NULL);
-	if (info->command_args[0][0] == '/' && !access(info->command_args[0], X_OK))
-		return (info->command_args[0]);
-	else
-		return (NULL);
+	if (info->command_args[0][0] == '/' && access(info->command_args[0], X_OK) == 0)
+    	return (ft_strdup(info->command_args[0]));
 	while (info->command_folders[i])
 	{
 		tmp = ft_strjoin(info->command_folders[i], "/");
