@@ -62,36 +62,7 @@ static void	do_command_one(t_command_info command, char **argv, int *fd_pipe)
 	clean_and_exit(command, fd_pipe, fd_infile);
 }
 
-static void	init_command(t_command_info *command, char **env)
-{
-	command->command_args = NULL;
-	command->command_folders = NULL;
-	command->absolute_path = NULL;
-	command->env = env;
-	command->path = get_path(command->env);
-	if (!command->path)
-	{
-		free(command->path);
-		perror("Error");
-		exit(1);
-	}
-	command->command_folders = ft_split(command->path, ':');
-	if (!command->command_folders)
-	{
-		free(command->path);
-		free_split(command->command_folders);
-		perror("Error");
-		exit(1);
-	}
-}
-
-static int	return_error(void)
-{
-	perror("Error");
-	return (0);
-}
-
-void do_commands(char **argv, char **env, int *fd_pipe, int cmd_num)
+static void	do_commands(char **argv, char **env, int *fd_pipe, int cmd_num)
 {
 	t_command_info command;
 
@@ -102,13 +73,6 @@ void do_commands(char **argv, char **env, int *fd_pipe, int cmd_num)
 	else
 		do_command_two(command, argv, fd_pipe); 
 	exit(1); 
-}
-void ignore_parents(int *fd_pipe)
-{
-	close(fd_pipe[0]);
-    close(fd_pipe[1]);
-	wait(NULL);
-	wait(NULL);
 }
 
 int main(int argc, char **argv, char **env)

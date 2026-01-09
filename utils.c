@@ -94,6 +94,7 @@ void	clean_and_exit(t_command_info cmd, int *fd_pipe, int fd_file)
 		free(cmd.absolute_path);
 	if (cmd.path)
 		free(cmd.path);
+	printf("hii");
 	perror("Error");
 	exit(1);
 }
