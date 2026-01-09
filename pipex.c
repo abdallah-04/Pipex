@@ -88,32 +88,49 @@ static void	init_command(t_command_info *command, char **env)
 static int	return_error(void)
 {
 	perror("Error");
-	return (1);
+	return (0);
 }
 
-int	main(int argc, char **argv, char **env)
+void do_commands(char **argv, char **env, int *fd_pipe, int cmd_num)
 {
-	t_command_info	command;
-	int				fd_pipe[2];
-	int				pipe_res;
-	int				fork_id;
+	t_command_info command;
+
+	ft_bzero(&command, sizeof(t_command_info));
+	init_command(&command, env);
+	if (cmd_num == 1)
+		do_command_one(command, argv, fd_pipe);
+	else
+		do_command_two(command, argv, fd_pipe); 
+	exit(1); 
+}
+void ignore_parents(int *fd_pipe)
+{
+	close(fd_pipe[0]);
+    close(fd_pipe[1]);
+	wait(NULL);
+	wait(NULL);
+}
+
+int main(int argc, char **argv, char **env)
+{
+	int	fd_pipe[2];
+	int	fork1_id;
+	int	fork2_id;
 
 	if (argc != 5)
 		return (0);
-	pipe_res = pipe(fd_pipe);
-	if (pipe_res == -1)
+	if (pipe(fd_pipe) == -1)
 		return (return_error());
-	fork_id = fork();
-	if (fork_id == -1)
+	fork1_id = fork();
+	if (fork1_id == -1) 
 		return (return_error());
-	ft_bzero(&command, sizeof(t_command_info));
-	init_command(&command, env);
-	if (fork_id == 0)
-		do_command_one(command, argv, fd_pipe);
-	else
-	{
-		wait(NULL);
-		do_command_two(command, argv, fd_pipe);
-	}
-	return (0);
+	if (fork1_id == 0)
+		do_commands(argv, env, fd_pipe, 1);
+	fork2_id = fork();
+	if (fork2_id == -1) 
+		return (return_error());
+	if (fork2_id== 0)
+		do_commands(argv, env, fd_pipe, 2);
+	ignore_parents(fd_pipe);
+    return (0);
 }
