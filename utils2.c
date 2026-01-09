@@ -2,9 +2,9 @@
 
 void    init_command(t_command_info *command, char **env)
 {
-	command->command_args = NULL;
-	command->command_folders = NULL;
-	command->absolute_path = NULL;
+    command->command_args = NULL;
+    command->command_folders = NULL;
+    command->absolute_path = NULL;
 	command->env = env;
 	command->path = get_path(command->env);
 	if (!command->path)
@@ -23,10 +23,15 @@ void    init_command(t_command_info *command, char **env)
 	}
 }
 
-int return_error(void)
+void    handel_syscall(int *fd_pipe)
 {
-	perror("Error");
-	return (0);
+    if (fd_pipe)
+    {
+        close(fd_pipe[0]);
+        close(fd_pipe[1]);
+    }
+    perror("Error"); 
+    exit(1);
 }
 
 void    ignore_parents(int *fd_pipe)

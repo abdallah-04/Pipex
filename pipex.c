@@ -84,15 +84,15 @@ int main(int argc, char **argv, char **env)
 	if (argc != 5)
 		return (0);
 	if (pipe(fd_pipe) == -1)
-		return (return_error());
+		handel_syscall(fd_pipe);
 	fork1_id = fork();
 	if (fork1_id == -1) 
-		return (return_error());
+		handel_syscall(fd_pipe);
 	if (fork1_id == 0)
 		do_commands(argv, env, fd_pipe, 1);
 	fork2_id = fork();
 	if (fork2_id == -1) 
-		return (return_error());
+		handel_syscall(fd_pipe);
 	if (fork2_id== 0)
 		do_commands(argv, env, fd_pipe, 2);
 	ignore_parents(fd_pipe);

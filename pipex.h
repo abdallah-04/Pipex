@@ -31,4 +31,4 @@ void	clean_and_exit(t_command_info cmd, int *fd_pipe, int fd_file);
 void	free_split(char **arr);
 void    init_command(t_command_info *command, char **env);
 void	ignore_parents(int *fd_pipe);
-int	return_error(void);
+void	handel_syscall(int *fd_pipe);
