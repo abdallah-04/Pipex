@@ -16,16 +16,14 @@ static void	do_command_two(t_command_info command, char **argv, int *fd_pipe)
 {
 	int	fd_outfile;
 
-	fd_outfile = open(argv[4], O_CREAT | O_WRONLY, 0644);
+	fd_outfile = open(argv[4], O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (fd_outfile == -1)
 		clean_and_exit(command, fd_pipe, -1);
 	if (dup2(fd_pipe[0], 0) == -1)
 		clean_and_exit(command, fd_pipe, fd_outfile);
 	if (dup2(fd_outfile, 1) == -1)
 		clean_and_exit(command, fd_pipe, fd_outfile);
-	close(fd_outfile);
-	close(fd_pipe[0]);
-	close(fd_pipe[1]);
+	close_fds(fd_pipe, fd_outfile);
 	command.command_args = ft_split(argv[3], ' ');
 	if (!command.command_args)
 		clean_and_exit(command, fd_pipe, fd_outfile);
@@ -48,9 +46,7 @@ static void	do_command_one(t_command_info command, char **argv, int *fd_pipe)
 		clean_and_exit(command, fd_pipe, fd_infile);
 	if (dup2(fd_pipe[1], 1) == -1)
 		clean_and_exit(command, fd_pipe, fd_infile);
-	close(fd_infile);
-	close(fd_pipe[0]);
-	close(fd_pipe[1]);
+	close_fds(fd_pipe, fd_infile);
 	command.command_args = ft_split(argv[2], ' ');
 	if (!command.command_args)
 		clean_and_exit(command, fd_pipe, fd_infile);
@@ -67,14 +63,37 @@ static void	do_commands(char **argv, char **env, int *fd_pipe, int cmd_num)
 	t_command_info command;
 
 	ft_bzero(&command, sizeof(t_command_info));
-	init_command(&command, env);
+	init_command(&command, env, fd_pipe);
 	if (cmd_num == 1)
 		do_command_one(command, argv, fd_pipe);
 	else
 		do_command_two(command, argv, fd_pipe); 
 	exit(1); 
 }
-
+void    init_command(t_command_info *command, char **env, int *fd_pipe)
+{
+    command->command_args = NULL;
+    command->command_folders = NULL;
+    command->absolute_path = NULL;
+	command->env = env;
+	command->path = get_path(command->env);
+	if (!command->path)
+	{
+		free(command->path);
+		close_fds(fd_pipe, 1);
+		perror("Error");
+		exit(1);
+	}
+	command->command_folders = ft_split(command->path, ':');
+	if (!command->command_folders)
+	{
+		free(command->path);
+		free_split(command->command_folders);
+		close_fds(fd_pipe, 1);
+		perror("Error");
+		exit(1);
+	}
+}
 int main(int argc, char **argv, char **env)
 {
 	int	fd_pipe[2];
@@ -84,15 +103,15 @@ int main(int argc, char **argv, char **env)
 	if (argc != 5)
 		return (0);
 	if (pipe(fd_pipe) == -1)
-		handel_syscall(fd_pipe);
+		handel_syscall(fd_pipe, 0);
 	fork1_id = fork();
 	if (fork1_id == -1) 
-		handel_syscall(fd_pipe);
+		handel_syscall(fd_pipe, 1);
 	if (fork1_id == 0)
 		do_commands(argv, env, fd_pipe, 1);
 	fork2_id = fork();
 	if (fork2_id == -1) 
-		handel_syscall(fd_pipe);
+		handel_syscall(fd_pipe, 1);
 	if (fork2_id== 0)
 		do_commands(argv, env, fd_pipe, 2);
 	ignore_parents(fd_pipe);

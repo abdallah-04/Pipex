@@ -77,6 +77,21 @@ void	free_split(char **arr)
 
 void	clean_and_exit(t_command_info cmd, int *fd_pipe, int fd_file)
 {
+	close_fds(fd_pipe, fd_file);
+	if (cmd.command_args)
+		free_split(cmd.command_args);
+	if (cmd.command_folders)
+		free_split(cmd.command_folders);
+	if (cmd.absolute_path)
+		free(cmd.absolute_path);
+	if (cmd.path)
+		free(cmd.path);
+	perror("Error");
+	exit(1);
+}
+
+void	close_fds(int *fd_pipe, int fd_file)
+{
 	if (fd_pipe)
 	{
 		if (fd_pipe[0] != -1)
@@ -86,15 +101,4 @@ void	clean_and_exit(t_command_info cmd, int *fd_pipe, int fd_file)
 	}
 	if (fd_file != -1)
 		close(fd_file);
-	if (cmd.command_args)
-		free_split(cmd.command_args);
-	if (cmd.command_folders)
-		free_split(cmd.command_folders);
-	if (cmd.absolute_path)
-		free(cmd.absolute_path);
-	if (cmd.path)
-		free(cmd.path);
-	printf("hii");
-	perror("Error");
-	exit(1);
 }
