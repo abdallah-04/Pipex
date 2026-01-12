@@ -58,6 +58,31 @@ static void	do_command_one(t_command_info command, char **argv, int *fd_pipe)
 	clean_and_exit(command, fd_pipe, fd_infile);
 }
 
+void    init_command(t_command_info *command, char **env, int *fd_pipe)
+{
+	command->command_args = NULL;
+	command->command_folders = NULL;
+	command->absolute_path = NULL;
+	command->env = env;
+	command->path = get_path(command->env);
+	if (!command->path)
+	{
+		//free(command->path);
+		close_fds(fd_pipe, 1);
+		perror("Error");
+		exit(1);
+	}
+	command->command_folders = ft_split(command->path, ':');
+	if (!command->command_folders)
+	{
+		free(command->path);
+		//free_split(command->command_folders);
+		close_fds(fd_pipe, 1);
+		perror("Error");
+		exit(1);
+	}
+}
+
 static void	do_commands(char **argv, char **env, int *fd_pipe, int cmd_num)
 {
 	t_command_info command;
@@ -70,30 +95,7 @@ static void	do_commands(char **argv, char **env, int *fd_pipe, int cmd_num)
 		do_command_two(command, argv, fd_pipe); 
 	exit(1); 
 }
-void    init_command(t_command_info *command, char **env, int *fd_pipe)
-{
-    command->command_args = NULL;
-    command->command_folders = NULL;
-    command->absolute_path = NULL;
-	command->env = env;
-	command->path = get_path(command->env);
-	if (!command->path)
-	{
-		free(command->path);
-		close_fds(fd_pipe, 1);
-		perror("Error");
-		exit(1);
-	}
-	command->command_folders = ft_split(command->path, ':');
-	if (!command->command_folders)
-	{
-		free(command->path);
-		free_split(command->command_folders);
-		close_fds(fd_pipe, 1);
-		perror("Error");
-		exit(1);
-	}
-}
+
 int main(int argc, char **argv, char **env)
 {
 	int	fd_pipe[2];
@@ -115,5 +117,5 @@ int main(int argc, char **argv, char **env)
 	if (fork2_id== 0)
 		do_commands(argv, env, fd_pipe, 2);
 	ignore_parents(fd_pipe);
-    return (0);
+	return (0);
 }

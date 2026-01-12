@@ -41,8 +41,8 @@ char	*get_cmd_path(t_command_info *info)
 
 	i = 0;
 	if (!info->command_args || !info->command_args[0]
-    	|| info->command_args[0][0] == '\0')
-    	return (NULL);
+		|| info->command_args[0][0] == '\0')
+		return (NULL);
 	if (info->command_args[0][0] == '/' && access(info->command_args[0], X_OK) == 0)
     	return (ft_strdup(info->command_args[0]));
 	while (info->command_folders[i])
@@ -88,17 +88,4 @@ void	clean_and_exit(t_command_info cmd, int *fd_pipe, int fd_file)
 		free(cmd.path);
 	perror("Error");
 	exit(1);
-}
-
-void	close_fds(int *fd_pipe, int fd_file)
-{
-	if (fd_pipe)
-	{
-		if (fd_pipe[0] != -1)
-			close(fd_pipe[0]);
-		if (fd_pipe[1] != -1)
-			close(fd_pipe[1]);
-	}
-	if (fd_file != -1)
-		close(fd_file);
 }
