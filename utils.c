@@ -6,7 +6,7 @@
 /*   By: amufleh <amufleh@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/07 11:57:57 by amufleh           #+#    #+#             */
-/*   Updated: 2026/01/08 15:28:42 by amufleh          ###   ########.fr       */
+/*   Updated: 2026/01/14 10:33:13 by amufleh          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,9 @@ char	*get_cmd_path(t_command_info *info)
 	if (!info->command_args || !info->command_args[0]
 		|| info->command_args[0][0] == '\0')
 		return (NULL);
-	if (info->command_args[0][0] == '/' && access(info->command_args[0], X_OK) == 0)
-    	return (ft_strdup(info->command_args[0]));
+	if (info->command_args[0][0] == '/' &&
+		access(info->command_args[0], X_OK) == 0)
+		return (ft_strdup(info->command_args[0]));
 	while (info->command_folders[i])
 	{
 		tmp = ft_strjoin(info->command_folders[i], "/");

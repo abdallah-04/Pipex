@@ -6,7 +6,7 @@
 /*   By: amufleh <amufleh@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/07 15:11:00 by amufleh           #+#    #+#             */
-/*   Updated: 2026/01/08 16:09:48 by amufleh          ###   ########.fr       */
+/*   Updated: 2026/01/14 10:30:44 by amufleh          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ static void	do_command_one(t_command_info command, char **argv, int *fd_pipe)
 	clean_and_exit(command, fd_pipe, fd_infile);
 }
 
-void    init_command(t_command_info *command, char **env, int *fd_pipe)
+void	init_command(t_command_info *command, char **env, int *fd_pipe)
 {
 	command->command_args = NULL;
 	command->command_folders = NULL;
@@ -67,7 +67,6 @@ void    init_command(t_command_info *command, char **env, int *fd_pipe)
 	command->path = get_path(command->env);
 	if (!command->path)
 	{
-		//free(command->path);
 		close_fds(fd_pipe, 1);
 		perror("Error");
 		exit(1);
@@ -76,7 +75,6 @@ void    init_command(t_command_info *command, char **env, int *fd_pipe)
 	if (!command->command_folders)
 	{
 		free(command->path);
-		//free_split(command->command_folders);
 		close_fds(fd_pipe, 1);
 		perror("Error");
 		exit(1);
@@ -85,18 +83,18 @@ void    init_command(t_command_info *command, char **env, int *fd_pipe)
 
 static void	do_commands(char **argv, char **env, int *fd_pipe, int cmd_num)
 {
-	t_command_info command;
+	t_command_info	command;
 
 	ft_bzero(&command, sizeof(t_command_info));
 	init_command(&command, env, fd_pipe);
 	if (cmd_num == 1)
 		do_command_one(command, argv, fd_pipe);
 	else
-		do_command_two(command, argv, fd_pipe); 
-	exit(1); 
+		do_command_two(command, argv, fd_pipe);
+	exit(1);
 }
 
-int main(int argc, char **argv, char **env)
+int	main(int argc, char **argv, char **env)
 {
 	int	fd_pipe[2];
 	int	fork1_id;
@@ -107,14 +105,14 @@ int main(int argc, char **argv, char **env)
 	if (pipe(fd_pipe) == -1)
 		handel_syscall(fd_pipe, 0);
 	fork1_id = fork();
-	if (fork1_id == -1) 
+	if (fork1_id == -1)
 		handel_syscall(fd_pipe, 1);
 	if (fork1_id == 0)
 		do_commands(argv, env, fd_pipe, 1);
 	fork2_id = fork();
-	if (fork2_id == -1) 
+	if (fork2_id == -1)
 		handel_syscall(fd_pipe, 1);
-	if (fork2_id== 0)
+	if (fork2_id == 0)
 		do_commands(argv, env, fd_pipe, 2);
 	ignore_parents(fd_pipe);
 	return (0);

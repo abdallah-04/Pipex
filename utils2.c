@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils2.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: amufleh <amufleh@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/14 10:33:24 by amufleh           #+#    #+#             */
+/*   Updated: 2026/01/14 10:33:24 by amufleh          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "pipex.h"
 
 void	close_fds(int *fd_pipe, int fd_file)
@@ -17,7 +29,7 @@ void	handel_syscall(int *fd_pipe, int flag)
 {
 	if (flag)
 		close_fds(fd_pipe, 1);
-	perror("Error"); 
+	perror("Error");
 	exit(1);
 }
 
