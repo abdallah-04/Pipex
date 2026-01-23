@@ -39,3 +39,4 @@ void	ignore_parents(int *fd_pipe)
 	wait(NULL);
 	wait(NULL);
 }
+//pipex

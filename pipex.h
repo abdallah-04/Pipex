@@ -37,3 +37,4 @@ void	ignore_parents(int *fd_pipe);
 void	handel_syscall(int *fd_pipe, int flag);
 void	close_fds(int *fd_pipe, int fd_file);
 #endif
+//pipex

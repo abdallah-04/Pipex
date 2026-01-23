@@ -117,3 +117,4 @@ int	main(int argc, char **argv, char **env)
 	ignore_parents(fd_pipe);
 	return (0);
 }
+//pipex

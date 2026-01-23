@@ -90,3 +90,4 @@ void	clean_and_exit(t_command_info cmd, int *fd_pipe, int fd_file)
 	perror("Error");
 	exit(1);
 }
+//pipex

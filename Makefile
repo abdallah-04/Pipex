@@ -10,7 +10,8 @@
 #                                                                              #
 # **************************************************************************** #
 
-SRC = utils.c utils2.c pipex.c
+SRC = utils.c utils2.c \
+		pipex.c
 OBJ = $(SRC:.c=.o)
 
 CC = cc
